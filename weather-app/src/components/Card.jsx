@@ -98,7 +98,8 @@ export default function Card() {
                           </div>
                           <div>
                             <img
-                              src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-weather/ilu3.webp"
+                              src={weatherData && `http:${weatherData.current.condition.icon}`}
+                              alt="Weather Icon"
                               width="150px"
                             />
                           </div>
