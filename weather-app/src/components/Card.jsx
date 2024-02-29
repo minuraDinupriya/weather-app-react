@@ -1,6 +1,34 @@
-import './Card.css'
+import "./Card.css";
+import { useState } from "react";
 
 export default function Card() {
+  const [searchVal, setSearchVal] = useState("");
+  const [weatherData, setWeatherData] = useState(null);
+  // const [area, setArea] = useState(null); // Initialize area state
+
+  const handleInputChange = (event) => {
+    setSearchVal(event.target.value);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch(
+        `http://api.weatherapi.com/v1/current.json?key=2aa4ba446ebf4d39bd685435233012&q=${searchVal}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setWeatherData(data);
+      
+      // Save searchVal to area when the button is clicked
+      // setArea(searchVal);
+    } catch (error) {
+      console.error("Error fetching weather data:", error);
+    }
+  };
+
   return (
     <>
       <section className="vh-100" style={{ backgroundColor: "#C1CFEA" }}>
@@ -10,6 +38,29 @@ export default function Card() {
             style={{ color: "#282828" }}
           >
             <div className="col-md-9 col-lg-7 col-xl-5">
+              <div className="d-flex align-items-center">
+                {" "}
+                {/* Container for centering */}
+                <div className="mb-3 w-100 ">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter your location"
+                    value={searchVal}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="btn btn-primary mb-3 ms-3 w-25"
+                  onClick={handleSubmit}
+                >
+                  {/* {" "} */}
+                  {/* Centered button */}
+                  Submit
+                </button>
+              </div>
+
               <div
                 className="card mb-4 gradient-custom"
                 style={{ borderRadius: 25 }}
@@ -36,9 +87,14 @@ export default function Card() {
                         <div className="d-flex justify-content-between mb-4 pb-2">
                           <div>
                             <h2 className="display-2">
-                              <strong>23°C</strong>
+                              <strong>
+                                {weatherData &&
+                                  `${weatherData.current.temp_c}°C`}
+                              </strong>
                             </h2>
-                            <p className="text-muted mb-0">Coimbra, Portugal</p>
+                            <p className="text-muted mb-0">
+                              {weatherData && weatherData.location.name}
+                            </p>
                           </div>
                           <div>
                             <img
